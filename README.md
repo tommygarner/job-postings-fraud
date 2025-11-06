@@ -4,7 +4,6 @@
 [@ethandavenport](https://github.com/ethandavenport)
 [@nkfavoriti](https://github.com/nkfavoriti)
 [@sebaspalacino](https://github.com/sebaspalacino)
-
 **Course**: Advanced Machine Learning (UT Austin)  
 **Project Duration**: November 2025 - December 2025
 
