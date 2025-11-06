@@ -1,6 +1,10 @@
 # Fake Job Posting Detection: Advanced ML with Interpretability
 
-**Team**: [Add team members]  
+**Team**: [@tommygarner](https://github.com/tommygarner)
+[@ethandavenport](https://github.com/ethandavenport)
+[@nkfavoriti](https://github.com/nkfavoriti)
+[@sebaspalacino](https://github.com/sebaspalacino)
+
 **Course**: Advanced Machine Learning (UT Austin)  
 **Project Duration**: November 2025 - December 2025
 
@@ -22,7 +26,7 @@ both amateur and sophisticated job posting scams.
 
 ### Dataset
 
-- **Source**: [Kaggle - Real or Fake Fake Job Posting Prediction](https://www.kaggle.com/datasets/shivamb/real-or-fake-fake-jobposting-prediction)
+- **Source**: [Kaggle - Real or Fake Job Posting Prediction](https://www.kaggle.com/datasets/shivamb/real-or-fake-fake-jobposting-prediction)
 - **Size**: 17,880 postings with 18 features
 - **Fraud Rate**: 4.84% (severe class imbalance)
 - **Target**: Binary classification (fraudulent: 0/1)
@@ -57,13 +61,13 @@ jupyter notebook 01_eda_summary.ipynb
 
 ## Project Phases
 
-### Phase 1: EDA & Feature Engineering ✓ (Complete)
+### Phase 1: EDA & Feature Engineering
 - Analyzed missing value patterns (83.96% salary_range missing)
 - Discovered U-shaped fraud-completeness relationship
 - Created 16 novel features (10 binary indicators + completeness score + patterns)
 - Statistical validation with chi-square tests
 
-### Phase 2: Baseline Modeling (In Progress)
+### Phase 2: Baseline Modeling
 - Logistic Regression with polynomial features
 - Random Forest and XGBoost models
 - Class imbalance handling (focal loss, cost-weighting, SMOTE)
@@ -93,23 +97,6 @@ jupyter notebook 01_eda_summary.ipynb
 | `results/` | Metrics, feature importance, predictions |
 | `docs/` | Documentation and blog content |
 
-## Key Findings
-
-### The Fraud Paradox
-Both extremely low completeness (score 0, 22.2% fraud) and perfect completeness (score 10, 9.3% fraud) 
-are fraud risks. Legitimate postings cluster around scores 6-7 (2.5% fraud rate).
-
-**Implication**: Linear models fail; tree-based models recommended.
-
-### Strongest Individual Predictors
-- Missing company_profile: +15.83pp fraud rate increase
-- no_company_info pattern: 24.45% fraud rate (5x baseline)
-- completeness_score: U-shaped relationship (p < 0.001)
-
-### Two Fraud Archetypes
-1. **Amateur Scams**: Bare bones postings with minimal information
-2. **Sophisticated Scams**: Detailed, "too good to be true" offerings
-
 ## Methods & Technologies
 
 - **Data Processing**: Pandas, NumPy
@@ -119,30 +106,10 @@ are fraud risks. Legitimate postings cluster around scores 6-7 (2.5% fraud rate)
 - **Visualization**: Matplotlib, Seaborn, Plotly
 - **Documentation**: Jupyter, Markdown
 
-## Performance Goals
-
-| Metric | Target |
-|--------|--------|
-| AUROC | > 0.95 |
-| PR-AUC | > 0.85 |
-| Precision | > 0.90 |
-| Recall | > 0.80 |
-| F1-Score | > 0.85 |
 
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## Timeline
-
-| Date | Milestone |
-|------|-----------|
-| Nov 6 | Repo setup, team organization |
-| Nov 15 | EDA complete, features engineered |
-| Nov 22 | Baseline models trained |
-| Nov 29 | Advanced models & interpretability |
-| Dec 6 | Final presentation ready |
-| Dec 11 | Blog post & code submission |
 
 ## References
 
