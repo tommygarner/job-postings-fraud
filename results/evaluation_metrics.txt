@@ -1,0 +1,32 @@
+﻿FINAL MODEL PERFORMANCE - MODULE 1
+===================================
+Date: November 7, 2025
+Test Set: 5,364 samples (260 fraud, 5,104 real)
+
+Binary Classification Metrics:
+  Accuracy: 97.52%
+  Precision: 80.98%
+  Recall: 63.85%
+  F1-Score: 0.7140
+
+Risk-Based Classification:
+  HIGH RISK Detection: 59.2% (154/260 frauds)
+  MEDIUM RISK Detection: 17.7% (46/260 frauds)
+  LOW RISK (missed): 23.1% (60/260 frauds)
+  Total Flagged: 76.9% (200/260 frauds)
+
+False Positive Analysis:
+  HIGH RISK False Positives: 0.3% (17/5,104)
+  MEDIUM RISK False Positives: 4.5% (229/5,104)
+
+Confusion Matrix:
+  True Positives: 166
+  True Negatives: 5,065
+  False Positives: 39
+  False Negatives: 94
+
+Model Comparison (Mean Scores):
+  Naive Bayes (Fraud): 31.76% | (Real): 1.49%
+  LSTM (Fraud): 60.43% | (Real): 2.82%
+  
+Ensemble Strategy: Weighted (25% NB, 75% LSTM) + Rule-Boosting

@@ -109,6 +109,22 @@ jupyter notebook 01_eda_summary.ipynb
 - **Visualization**: Matplotlib, Seaborn, Plotly
 - **Documentation**: Jupyter, Markdown
 
+## Module 1: Interpretable Ensemble
+
+### Features
+- **Multi-level Interpretability**: Feature importance, sentence attribution, linguistic patterns, red flags
+- **Three-tier Risk Classification**: HIGH/MEDIUM/LOW risk levels with actionable recommendations
+- **Rule-Based Boosting**: 8 red flags detect fraud indicators (urgency, payment requests, missing credentials)
+- **Batch Processing**: Optimized implementation 20-50x faster than single predictions
+
+### Performance
+- **Accuracy**: 97.52%
+- **F1-Score**: 0.714
+- **Precision**: 80.98%
+- **Total Fraud Detection**: 76.9% (HIGH + MEDIUM)
+- **False Positive Rate**: 0.3% (HIGH), 4.5% (MEDIUM)
+
+See `notebooks/06_module1_interpretability.ipynb` for full implementation and examples.
 
 ## Contributing
 
