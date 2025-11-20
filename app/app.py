@@ -31,60 +31,180 @@ st.set_page_config(
 # Custom CSS for better styling
 st.markdown("""
     <style>
-    /* Clean corporate design */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+    * {
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* Main background gradient */
     .main {
-        background-color: #f8f9fa;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-attachment: fixed;
     }
+
+    /* Content container */
+    .block-container {
+        background: white;
+        border-radius: 24px;
+        padding: 3rem 2.5rem;
+        box-shadow: 0 25px 70px rgba(0,0,0,0.3);
+        margin-top: 2rem;
+    }
+
+    /* Header styling */
     h1 {
-        color: #1e3a8a;
-        font-size: 3rem;
-        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 3.5rem;
+        font-weight: 900;
         text-align: center;
-        border-bottom: 4px solid #3b82f6;
-        padding-bottom: 1rem;
-        margin-bottom: 2rem;
+        margin-bottom: 0.5rem;
+        letter-spacing: -1px;
     }
-    .stButton>button {
-        background-color: #3b82f6;
+
+    h2 {
+        color: #1e293b;
+        font-weight: 700;
+        margin-top: 2rem;
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        color: #475569;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        font-size: 1.3rem;
+    }
+
+    /* Subtitle */
+    .subtitle {
+        text-align: center;
+        color: #64748b;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+    }
+
+    /* Primary buttons */
+    .stButton > button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         border: none;
-        padding: 14px 28px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 1.1rem;
-        transition: all 0.2s;
-    }
-    .stButton>button:hover {
-        background-color: #2563eb;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
-    .stTextArea textarea {
-        border: 2px solid #e5e7eb;
-        border-radius: 8px;
-        font-size: 1rem;
-    }
-    .stTextArea textarea:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-    /* Card styling */
-    div[data-testid="stMetricValue"] {
-        font-size: 2.5rem;
-        color: #1e3a8a;
+        padding: 16px 32px;
+        border-radius: 12px;
         font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        width: 100%;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
+
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        background: linear-gradient(135deg, #7c8eee 0%, #8b5cb8 100%);
+    }
+
+    /* Text area */
+    .stTextArea textarea {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        padding: 1rem;
+        background: #f8fafc;
+    }
+
+    .stTextArea textarea:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        background: white;
+    }
+
+    /* Metrics */
+    div[data-testid="stMetricValue"] {
+        font-size: 3rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Fraud alert box */
     .fraud-metric {
-        background-color: #fee2e2;
-        padding: 20px;
-        border-radius: 10px;
-        border-left: 5px solid #dc2626;
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        padding: 2rem;
+        border-radius: 16px;
+        border-left: 6px solid #dc2626;
+        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.1);
     }
+
+    /* Legit alert box */
     .legit-metric {
-        background-color: #d1fae5;
-        padding: 20px;
-        border-radius: 10px;
-        border-left: 5px solid #059669;
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        padding: 2rem;
+        border-radius: 16px;
+        border-left: 6px solid #059669;
+        box-shadow: 0 4px 15px rgba(5, 150, 105, 0.1);
     }
+
+    /* Sidebar */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] li {
+        color: white !important;
+    }
+
+    /* Tabs */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+        background: #f1f5f9;
+        padding: 8px;
+        border-radius: 12px;
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white !important;
+    }
+
+    /* Expander */
+    .streamlit-expanderHeader {
+        background: #f8fafc;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 1rem;
+    }
+
+    /* Warning/Info boxes */
+    .stAlert {
+        border-radius: 12px;
+        padding: 1.5rem;
+        border-left: 5px solid;
+    }
+
+    /* Remove Streamlit branding spacing */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
     </style>
 """, unsafe_allow_html=True)
 
