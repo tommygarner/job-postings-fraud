@@ -31,182 +31,120 @@ st.set_page_config(
 # Custom CSS for better styling
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap');
 
     * {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
     }
 
-    /* Main background gradient */
+    /* Dark background */
     .main {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        background-attachment: fixed;
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        color: #e2e8f0;
     }
 
-    /* Content container */
     .block-container {
-        background: white;
-        border-radius: 24px;
-        padding: 3rem 2.5rem;
-        box-shadow: 0 25px 70px rgba(0,0,0,0.3);
-        margin-top: 2rem;
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(100, 116, 139, 0.2);
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     }
 
-    /* Header styling */
+    /* Glowing header */
     h1 {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #60a5fa;
         font-size: 3.5rem;
-        font-weight: 900;
-        text-align: center;
-        margin-bottom: 0.5rem;
-        letter-spacing: -1px;
-    }
-
-    h2 {
-        color: #1e293b;
         font-weight: 700;
-        margin-top: 2rem;
-        font-size: 1.8rem;
-    }
-
-    h3 {
-        color: #475569;
-        font-weight: 600;
-        margin-top: 1.5rem;
-        font-size: 1.3rem;
-    }
-
-    /* Subtitle */
-    .subtitle {
         text-align: center;
-        color: #64748b;
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
-        font-weight: 500;
+        text-shadow: 0 0 30px rgba(96, 165, 250, 0.5);
+        margin-bottom: 1rem;
     }
 
-    /* Primary buttons */
+    h2, h3 {
+        color: #e2e8f0;
+        font-weight: 600;
+    }
+
+    /* Neon buttons */
     .stButton > button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
         color: white;
-        border: none;
+        border: 2px solid #60a5fa;
         padding: 16px 32px;
         border-radius: 12px;
         font-weight: 700;
         font-size: 1.1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        width: 100%;
+        transition: all 0.3s;
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
     }
 
     .stButton > button:hover {
+        box-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-        background: linear-gradient(135deg, #7c8eee 0%, #8b5cb8 100%);
+        border-color: #93c5fd;
     }
 
     /* Text area */
     .stTextArea textarea {
-        border: 2px solid #e2e8f0;
+        background: rgba(30, 41, 59, 0.8);
+        border: 2px solid #334155;
         border-radius: 12px;
+        color: #e2e8f0;
         font-size: 1.05rem;
-        transition: all 0.3s ease;
-        padding: 1rem;
-        background: #f8fafc;
     }
 
     .stTextArea textarea:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-        background: white;
+        border-color: #60a5fa;
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+    }
+
+    /* Fraud alert - Red glow */
+    .fraud-metric {
+        background: linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(239, 68, 68, 0.2) 100%);
+        border: 2px solid #dc2626;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 0 30px rgba(220, 38, 38, 0.3);
+    }
+
+    /* Legit alert - Green glow */
+    .legit-metric {
+        background: linear-gradient(135deg, rgba(5, 150, 105, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
+        border: 2px solid #059669;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 0 30px rgba(5, 150, 105, 0.3);
     }
 
     /* Metrics */
     div[data-testid="stMetricValue"] {
         font-size: 3rem;
         font-weight: 800;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    /* Fraud alert box */
-    .fraud-metric {
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-        padding: 2rem;
-        border-radius: 16px;
-        border-left: 6px solid #dc2626;
-        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.1);
-    }
-
-    /* Legit alert box */
-    .legit-metric {
-        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-        padding: 2rem;
-        border-radius: 16px;
-        border-left: 6px solid #059669;
-        box-shadow: 0 4px 15px rgba(5, 150, 105, 0.1);
+        color: #60a5fa !important;
+        text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
     }
 
     /* Sidebar */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+        border-right: 1px solid rgba(100, 116, 139, 0.3);
     }
 
-    [data-testid="stSidebar"] h1,
-    [data-testid="stSidebar"] h2,
-    [data-testid="stSidebar"] h3,
-    [data-testid="stSidebar"] p,
-    [data-testid="stSidebar"] li {
-        color: white !important;
+    [data-testid="stSidebar"] * {
+        color: #e2e8f0 !important;
     }
 
-    /* Tabs */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background: #f1f5f9;
-        padding: 8px;
-        border-radius: 12px;
-    }
-
-    .stTabs [data-baseweb="tab"] {
-        border-radius: 8px;
-        padding: 12px 24px;
-        font-weight: 600;
-        transition: all 0.3s;
-    }
-
-    .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white !important;
-    }
-
-    /* Expander */
-    .streamlit-expanderHeader {
-        background: #f8fafc;
-        border-radius: 8px;
-        font-weight: 600;
-        padding: 1rem;
-    }
-
-    /* Warning/Info boxes */
-    .stAlert {
-        border-radius: 12px;
-        padding: 1.5rem;
-        border-left: 5px solid;
-    }
-
-    /* Remove Streamlit branding spacing */
+    /* Hide Streamlit elements */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     </style>
 """, unsafe_allow_html=True)
+
 
 # ============= LOAD MODELS (cached) =============
 @st.cache_resource
