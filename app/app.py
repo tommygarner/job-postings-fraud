@@ -31,37 +31,59 @@ st.set_page_config(
 # Custom CSS for better styling
 st.markdown("""
     <style>
-    .main-header {
+    /* Clean corporate design */
+    .main {
+        background-color: #f8f9fa;
+    }
+    h1 {
+        color: #1e3a8a;
         font-size: 3rem;
-        font-weight: bold;
+        font-weight: 700;
         text-align: center;
-        color: #1f77b4;
+        border-bottom: 4px solid #3b82f6;
+        padding-bottom: 1rem;
         margin-bottom: 2rem;
     }
+    .stButton>button {
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.2s;
+    }
+    .stButton>button:hover {
+        background-color: #2563eb;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    .stTextArea textarea {
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+    .stTextArea textarea:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    /* Card styling */
+    div[data-testid="stMetricValue"] {
+        font-size: 2.5rem;
+        color: #1e3a8a;
+        font-weight: 700;
+    }
     .fraud-metric {
-        background-color: #ffebee;
+        background-color: #fee2e2;
         padding: 20px;
         border-radius: 10px;
-        border-left: 5px solid #f44336;
+        border-left: 5px solid #dc2626;
     }
     .legit-metric {
-        background-color: #e8f5e9;
+        background-color: #d1fae5;
         padding: 20px;
         border-radius: 10px;
-        border-left: 5px solid #4caf50;
-    }
-    .highlight-word {
-        padding: 2px 5px;
-        border-radius: 3px;
-        margin: 2px;
-    }
-    .fraud-word {
-        background-color: #ffcdd2;
-        color: #c62828;
-    }
-    .legit-word {
-        background-color: #c8e6c9;
-        color: #2e7d32;
+        border-left: 5px solid #059669;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -71,10 +93,11 @@ st.markdown("""
 def load_models():
     """Load all models and preprocessing objects"""
     try:
-        # Load models
-        nb_model = pickle.load(open('models/nb_model.pkl', 'rb'))
-        # lstm_model = load_model('models/lstm_model.h5')
-        vectorizer = pickle.load(open('models/tfidf_vectorizer.pkl', 'rb'))
+        # Update paths to match your folder structure
+        nb_model = pickle.load(open('models/naive_bayes_model.pkl', 'rb'))
+        # lstm_model = load_model('models/lstm_model.h5')  # Keep commented since no TensorFlow
+        lstm_model = None
+        vectorizer = pickle.load(open('models/vectorizer.pkl', 'rb'))
         tokenizer = pickle.load(open('models/tokenizer.pkl', 'rb'))
 
         # Initialize NLTK
@@ -82,9 +105,14 @@ def load_models():
         nltk.download('stopwords', quiet=True)
         nltk.download('wordnet', quiet=True)
 
+        st.success("✅ Models loaded successfully!")
         return nb_model, lstm_model, vectorizer, tokenizer
+
+    except FileNotFoundError as e:
+        st.warning(f"⚠️ Models not found. Using placeholder data for demo. Missing: {e.filename}")
+        return None, None, None, None
     except Exception as e:
-        st.error(f"Error loading models: {e}")
+        st.warning(f"⚠️ Using placeholder data for demo. Error: {str(e)}")
         return None, None, None, None
 
 # Load models
