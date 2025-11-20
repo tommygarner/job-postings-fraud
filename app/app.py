@@ -11,9 +11,9 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import pickle
-import tensorflow as tf
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+# import tensorflow as tf
+# from tensorflow.keras.models import load_model
+# from tensorflow.keras.preprocessing.sequence import pad_sequences
 import shap
 from lime.lime_text import LimeTextExplainer
 import nltk
@@ -73,7 +73,7 @@ def load_models():
     try:
         # Load models
         nb_model = pickle.load(open('models/nb_model.pkl', 'rb'))
-        lstm_model = load_model('models/lstm_model.h5')
+        # lstm_model = load_model('models/lstm_model.h5')
         vectorizer = pickle.load(open('models/tfidf_vectorizer.pkl', 'rb'))
         tokenizer = pickle.load(open('models/tokenizer.pkl', 'rb'))
 
