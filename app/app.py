@@ -31,114 +31,122 @@ st.set_page_config(
 # Custom CSS for better styling
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600;700;800&display=swap');
 
     * {
-        font-family: 'Space Grotesk', sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
     }
 
-    /* Dark background */
+    /* Gradient background */
     .main {
-        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-        color: #e2e8f0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
     }
 
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Glassmorphism container */
     .block-container {
-        background: rgba(15, 23, 42, 0.8);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(100, 116, 139, 0.2);
-        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(20px) saturate(180%);
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
         padding: 3rem;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.2);
     }
 
-    /* Glowing header */
+    /* Header */
     h1 {
-        color: #60a5fa;
-        font-size: 3.5rem;
-        font-weight: 700;
+        font-size: 4rem;
+        font-weight: 800;
         text-align: center;
-        text-shadow: 0 0 30px rgba(96, 165, 250, 0.5);
-        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+        letter-spacing: -2px;
     }
 
     h2, h3 {
-        color: #e2e8f0;
-        font-weight: 600;
+        color: #1e293b;
+        font-weight: 700;
     }
 
-    /* Neon buttons */
+    /* Frosted glass buttons */
     .stButton > button {
-        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-        color: white;
-        border: 2px solid #60a5fa;
-        padding: 16px 32px;
-        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        color: #1e293b;
+        padding: 18px 36px;
+        border-radius: 16px;
         font-weight: 700;
         font-size: 1.1rem;
         transition: all 0.3s;
-        box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     .stButton > button:hover {
-        box-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
-        transform: translateY(-2px);
-        border-color: #93c5fd;
+        background: rgba(255, 255, 255, 0.5);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
     }
 
     /* Text area */
     .stTextArea textarea {
-        background: rgba(30, 41, 59, 0.8);
-        border: 2px solid #334155;
-        border-radius: 12px;
-        color: #e2e8f0;
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 16px;
         font-size: 1.05rem;
+        padding: 1.2rem;
     }
 
     .stTextArea textarea:focus {
-        border-color: #60a5fa;
-        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+        background: rgba(255, 255, 255, 0.6);
+        border-color: rgba(102, 126, 234, 0.6);
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
     }
 
-    /* Fraud alert - Red glow */
+    /* Alert boxes with glass effect */
     .fraud-metric {
-        background: linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(239, 68, 68, 0.2) 100%);
-        border: 2px solid #dc2626;
+        background: rgba(254, 226, 226, 0.4);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(220, 38, 38, 0.3);
         padding: 2rem;
-        border-radius: 16px;
-        box-shadow: 0 0 30px rgba(220, 38, 38, 0.3);
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(220, 38, 38, 0.1);
     }
 
-    /* Legit alert - Green glow */
     .legit-metric {
-        background: linear-gradient(135deg, rgba(5, 150, 105, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
-        border: 2px solid #059669;
+        background: rgba(209, 250, 229, 0.4);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(5, 150, 105, 0.3);
         padding: 2rem;
-        border-radius: 16px;
-        box-shadow: 0 0 30px rgba(5, 150, 105, 0.3);
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(5, 150, 105, 0.1);
     }
 
     /* Metrics */
     div[data-testid="stMetricValue"] {
-        font-size: 3rem;
-        font-weight: 800;
-        color: #60a5fa !important;
-        text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+        font-size: 3.5rem;
+        font-weight: 900;
+        color: #1e293b;
     }
 
-    /* Sidebar */
+    /* Sidebar glass */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-        border-right: 1px solid rgba(100, 116, 139, 0.3);
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(20px);
+        border-right: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    [data-testid="stSidebar"] * {
-        color: #e2e8f0 !important;
-    }
-
-    /* Hide Streamlit elements */
+    /* Hide branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
