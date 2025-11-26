@@ -109,26 +109,29 @@ job_text = st.text_area(
 analyze = st.button("Analyze Job Posting")
 
 if analyze:
-    if not job_text.strip():
-        st.warning("Please enter a job posting.")
-    else:
-        with st.spinner("Analyzing with MiniLM..."):
-            fraud_prob = predict_fraud_prob(job_text)
-            token_attr_sorted, delta = get_ig_attributions(job_text)
-
-        # Risk level
-        if fraud_prob > 0.60:
-            risk_label = "HIGH RISK"
-            risk_color = "red"
-            rec = "DO NOT APPLY – strong indicators of fraud."
-        elif fraud_prob > 0.30:
-            risk_label = "MEDIUM RISK"
-            risk_color = "orange"
-            rec = "INVESTIGATE CAREFULLY – some suspicious patterns."
+    try: 
+        if not job_text.strip():
+            st.warning("Please enter a job posting.")
         else:
-            risk_label = "LOW RISK"
-            risk_color = "green"
-            rec = "APPEARS SAFE – no major red flags detected."
+            with st.spinner("Analyzing with MiniLM..."):
+                fraud_prob = predict_fraud_prob(job_text)
+                token_attr_sorted, delta = get_ig_attributions(job_text)
+
+            # Risk level
+            if fraud_prob > 0.60:
+                risk_label = "HIGH RISK"
+                risk_color = "red"
+                rec = "DO NOT APPLY – strong indicators of fraud."
+            elif fraud_prob > 0.30:
+                risk_label = "MEDIUM RISK"
+                risk_color = "orange"
+                rec = "INVESTIGATE CAREFULLY – some suspicious patterns."
+            else:
+                risk_label = "LOW RISK"
+                risk_color = "green"
+                rec = "APPEARS SAFE – no major red flags detected."
+    except Exception as e:
+        st.exception(e)
 
         # Layout
         col1, col2 = st.columns(2)
