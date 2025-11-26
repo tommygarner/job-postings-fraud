@@ -213,8 +213,18 @@ if analyze:
                 fraud_prob = predict_fraud_prob(job_text)
                 token_attr_sorted, delta = get_ig_attributions(job_text)
 
-                nb_fraud_prob, nb_token_attr_sorted = predict_nb_with_shap(job_text)
-                ensemble_prob = (fraud_prob + nb_fraud_prob) / 2.0
+                nb_fraud_prob = None
+                nb_token_attr_sorted = []
+                try:
+                    nb_fraud_prob, nb_token_attr_sorted = predict_nb_with_shap(job_text, nsamples=50)
+                except Exception as e:
+                    st.warning("Naive Bayes + SHAP explanation failed on this platform; showing MiniLM only.")
+                    st.text(str(e))
+
+                if nb_fraud_prob is not None:
+                    ensemble_prob = (fraud_prob + nb_fraud_prob) / 2.0
+                else:
+                    ensemble_prob = fraud_prob
         except Exception as e:
             st.exception(e)
         else:
