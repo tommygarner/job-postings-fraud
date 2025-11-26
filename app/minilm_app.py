@@ -77,8 +77,8 @@ def get_ig_attributions(text: str, n_steps: int = 50):
         padding="max_length",
     ).to(device)
 
-    # Get embeddings
-    word_embeddings = model.base_model.embeddings.word_embeddings
+    # Get embeddings using public API (safer than .embeddings.word_embeddings)
+    word_embeddings = model.base_model.get_input_embeddings()
     inputs_embeds = word_embeddings(encoded["input_ids"]).detach().requires_grad_(True)
     baselines = torch.zeros_like(inputs_embeds).to(device)
 
@@ -90,21 +90,18 @@ def get_ig_attributions(text: str, n_steps: int = 50):
         n_steps=n_steps,
     )
 
-    # Sum over embedding dimension
     attributions_sum = attributions.sum(dim=-1).squeeze(0)
     attributions_norm = attributions_sum / torch.norm(attributions_sum)
 
     tokens = tokenizer.convert_ids_to_tokens(encoded["input_ids"][0])
     attrs = attributions_norm.detach().cpu().numpy()
 
-    # Filter special tokens
     token_attr = [
         (tok, float(attr))
         for tok, attr in zip(tokens, attrs)
         if tok not in ["[CLS]", "[SEP]", "[PAD]"]
     ]
 
-    # Sort by absolute attribution
     token_attr_sorted = sorted(token_attr, key=lambda x: abs(x[1]), reverse=True)
     return token_attr_sorted, float(delta.item())
 
