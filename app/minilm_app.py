@@ -24,10 +24,12 @@ def load_minilm():
 model, tokenizer, device = load_minilm()
 
 # Integrated Gradients instance
-ig = IntegratedGradients(lambda inputs_embeds, attention_mask: F.softmax(
-    model(inputs_embeds=inputs_embeds, attention_mask=attention_mask).logits,
-    dim=1
-)[:, 1])
+ig = IntegratedGradients(
+    lambda inputs_embeds, attention_mask: F.softmax(
+        model(inputs_embeds=inputs_embeds, attention_mask=attention_mask).logits,
+        dim=1,
+    )[:, 1]
+)
 
 # ------------------------------
 # 2. Helper: predict fraud prob
@@ -38,7 +40,7 @@ def predict_fraud_prob(text: str) -> float:
         return_tensors="pt",
         truncation=True,
         max_length=256,
-        padding="max_length"
+        padding="max_length",
     ).to(device)
     with torch.no_grad():
         outputs = model(**encoded)
@@ -55,7 +57,7 @@ def get_ig_attributions(text: str, n_steps: int = 50):
         return_tensors="pt",
         truncation=True,
         max_length=256,
-        padding="max_length"
+        padding="max_length",
     ).to(device)
 
     # Get embeddings
@@ -109,14 +111,16 @@ job_text = st.text_area(
 analyze = st.button("Analyze Job Posting")
 
 if analyze:
-    try: 
-        if not job_text.strip():
-            st.warning("Please enter a job posting.")
-        else:
+    if not job_text.strip():
+        st.warning("Please enter a job posting.")
+    else:
+        try:
             with st.spinner("Analyzing with MiniLM..."):
                 fraud_prob = predict_fraud_prob(job_text)
                 token_attr_sorted, delta = get_ig_attributions(job_text)
-
+        except Exception as e:
+            st.exception(e)
+        else:
             # Risk level
             if fraud_prob > 0.60:
                 risk_label = "HIGH RISK"
@@ -130,60 +134,57 @@ if analyze:
                 risk_label = "LOW RISK"
                 risk_color = "green"
                 rec = "APPEARS SAFE – no major red flags detected."
-    except Exception as e:
-        st.exception(e)
 
-        # Layout
-        col1, col2 = st.columns(2)
-        with col1:
-            st.metric("Fraud Probability", f"{fraud_prob*100:.1f}%")
-        with col2:
-            st.markdown(
-                f"<h3 style='color:{risk_color};'>Risk Level: {risk_label}</h3>",
-                unsafe_allow_html=True,
-            )
-
-        st.markdown(f"**Recommendation:** {rec}")
-
-        st.markdown("---")
-        st.subheader("Word-level Importance (Integrated Gradients)")
-
-        # Show top 15 fraud / legit indicators
-        top_k = 15
-        top_tokens = token_attr_sorted[:top_k]
-        st.markdown("**Top tokens by absolute importance:**")
-        for tok, attr in top_tokens:
-            color = "red" if attr > 0 else "green"
-            st.markdown(
-                f"- <span style='color:{color};'>{tok}</span> → {attr:+.4f}",
-                unsafe_allow_html=True,
-            )
-
-        st.caption(f"Convergence delta: {delta:.6f} (closer to 0 is better).")
-
-        # Optional: simple inline highlighted text
-        st.subheader("Highlighted Job Text (experimental)")
-
-        # Map tokens back to a simple span string
-        highlighted = []
-        for tok, attr in token_attr_sorted:
-            color = ""
-            if attr > 0.03:
-                color = "rgba(255,0,0,0.25)"  # red background
-            elif attr < -0.03:
-                color = "rgba(0,128,0,0.25)"  # green background
-
-            clean_tok = tok.replace("##", "")
-            if color:
-                highlighted.append(
-                    f"<span style='background-color:{color};'>{clean_tok}</span>"
+            # Layout
+            col1, col2 = st.columns(2)
+            with col1:
+                st.metric("Fraud Probability", f"{fraud_prob*100:.1f}%")
+            with col2:
+                st.markdown(
+                    f"<h3 style='color:{risk_color};'>Risk Level: {risk_label}</h3>",
+                    unsafe_allow_html=True,
                 )
-            else:
-                highlighted.append(clean_tok)
 
-        st.markdown(
-            "<p style='line-height:1.6;'>"
-            + " ".join(highlighted)
-            + "</p>",
-            unsafe_allow_html=True,
-        )
+            st.markdown(f"**Recommendation:** {rec}")
+
+            st.markdown("---")
+            st.subheader("Word-level Importance (Integrated Gradients)")
+
+            # Show top 15 fraud / legit indicators
+            top_k = 15
+            top_tokens = token_attr_sorted[:top_k]
+            st.markdown("**Top tokens by absolute importance:**")
+            for tok, attr in top_tokens:
+                color = "red" if attr > 0 else "green"
+                st.markdown(
+                    f"- <span style='color:{color};'>{tok}</span> → {attr:+.4f}",
+                    unsafe_allow_html=True,
+                )
+
+            st.caption(f"Convergence delta: {delta:.6f} (closer to 0 is better).")
+
+            # Optional: simple inline highlighted text
+            st.subheader("Highlighted Job Text (experimental)")
+
+            highlighted = []
+            for tok, attr in token_attr_sorted:
+                color = ""
+                if attr > 0.03:
+                    color = "rgba(255,0,0,0.25)"  # red background
+                elif attr < -0.03:
+                    color = "rgba(0,128,0,0.25)"  # green background
+
+                clean_tok = tok.replace("##", "")
+                if color:
+                    highlighted.append(
+                        f"<span style='background-color:{color};'>{clean_tok}</span>"
+                    )
+                else:
+                    highlighted.append(clean_tok)
+
+            st.markdown(
+                "<p style='line-height:1.6;'>"
+                + " ".join(highlighted)
+                + "</p>",
+                unsafe_allow_html=True,
+            )
