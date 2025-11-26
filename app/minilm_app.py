@@ -5,23 +5,40 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 from captum.attr import IntegratedGradients
 import numpy as np
 
+st.write("✅ Script imports completed")
+
 # ------------------------------
 # 1. Load model and tokenizer
 # ------------------------------
 @st.cache_resource
 def load_minilm():
-    model = AutoModelForSequenceClassification.from_pretrained(
-        "models/model_miniLM_final"
-    )
-    tokenizer = AutoTokenizer.from_pretrained(
-        "models/model_miniLM_final"
-    )
-    model.eval()
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
-    return model, tokenizer, device
+    try:
+        st.write("🔄 Attempting to load MiniLM model from models/model_miniLM_final...")
+        model = AutoModelForSequenceClassification.from_pretrained(
+            "models/model_miniLM_final"
+        )
+        st.write("✅ Model loaded")
+        
+        tokenizer = AutoTokenizer.from_pretrained(
+            "models/model_miniLM_final"
+        )
+        st.write("✅ Tokenizer loaded")
+        
+        model.eval()
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model.to(device)
+        st.write(f"✅ Model moved to device: {device}")
+        return model, tokenizer, device
+    except Exception as e:
+        st.error(f"❌ Error loading model:")
+        st.exception(e)
+        st.stop()
 
+st.write("🔄 Calling load_minilm()...")
 model, tokenizer, device = load_minilm()
+st.write("✅ Model, tokenizer, device ready")
+
+# rest of your code unchanged...
 
 # Integrated Gradients instance
 ig = IntegratedGradients(
