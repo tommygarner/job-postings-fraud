@@ -5,7 +5,20 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 from captum.attr import IntegratedGradients
 import numpy as np
 
+import os
+
+st.set_page_config(page_title="Fake Job Posting Detector (MiniLM)", layout="wide")
+
+st.write(f"🔍 Current working directory: {os.getcwd()}")
+st.write(f"🔍 App file location: {__file__}")
 st.write("✅ Script imports completed")
+
+from pathlib import Path
+
+# Get the repository root (parent of the app directory)
+REPO_ROOT = Path(__file__).parent.parent
+MODEL_PATH = REPO_ROOT / "models" / "model_miniLM_final"
+
 
 # ------------------------------
 # 1. Load MiniLM model and tokenizer
@@ -13,15 +26,16 @@ st.write("✅ Script imports completed")
 @st.cache_resource
 def load_minilm():
     try:
-        st.write("🔄 Attempting to load MiniLM model from models/model_miniLM_final...")
+        st.write(f"🔄 Attempting to load MiniLM model from {MODEL_PATH}...")
         model = AutoModelForSequenceClassification.from_pretrained(
-            "models/model_miniLM_final"
+            str(MODEL_PATH)  # Convert Path to string
         )
         st.write("✅ MiniLM model loaded")
 
         tokenizer = AutoTokenizer.from_pretrained(
-            "models/model_miniLM_final"
+            str(MODEL_PATH)
         )
+
         st.write("✅ MiniLM tokenizer loaded")
 
         model.eval()
