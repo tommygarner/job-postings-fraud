@@ -185,12 +185,12 @@ if analyze:
 
                 # map magnitude to opacity
                 mag = min(abs(ig_attr) * 5.0, 1.0)
-                if ig_attr > 0:
+                if ig_attr < 0:
                     alpha = 0.15 + 0.35 * mag
-                    bg = f"rgba(255,0,0,{alpha})"
-                elif ig_attr < 0:
+                    bg = f"rgba(255,0,0,{alpha})"  #red for fraud
+                elif ig_attr > 0:
                     alpha = 0.15 + 0.35 * mag
-                    bg = f"rgba(0,128,0,{alpha})"
+                    bg = f"rgba(0,128,0,{alpha})"  #green for legit
                 else:
                     bg = ""
 
