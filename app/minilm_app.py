@@ -80,7 +80,7 @@ def predict_fraud_prob(text: str) -> float:
 # ------------------------------
 # 3. MiniLM helper: IG word attributions
 # ------------------------------
-def get_ig_attributions(text: str, n_steps: int = 50):
+def get_ig_attributions(text: str, n_steps: int = 10):
     encoded = tokenizer(
         text,
         return_tensors="pt",
@@ -141,11 +141,20 @@ if analyze:
         st.warning("Please enter a job posting.")
     else:
         try:
-            with st.spinner("Analyzing with MiniLM..."):
+            st.write("🔄 Starting prediction...")
+            with st.spinner("Getting fraud probability..."):
                 fraud_prob = predict_fraud_prob(job_text)
-                token_attr_sorted, delta = get_ig_attributions(job_text)
+            st.write(f"✅ Fraud probability: {fraud_prob:.2%}")
+            
+            st.write("🔄 Computing attributions...")
+            with st.spinner("Analyzing word importance..."):
+                token_attr_sorted, delta = get_ig_attributions(job_text, n_steps=10)
+            st.write("✅ Attributions computed")
+            
         except Exception as e:
+            st.error("❌ Error during analysis:")
             st.exception(e)
+            st.stop()
         else:
             # -------- Prediction panel --------
             if fraud_prob > 0.60:
