@@ -9,9 +9,9 @@ import os
 
 st.set_page_config(page_title="Fake Job Posting Detector (MiniLM)", layout="wide")
 
-st.write(f"🔍 Current working directory: {os.getcwd()}")
-st.write(f"🔍 App file location: {__file__}")
-st.write("✅ Script imports completed")
+#st.write(f"🔍 Current working directory: {os.getcwd()}")
+#st.write(f"🔍 App file location: {__file__}")
+#st.write("✅ Script imports completed")
 
 from pathlib import Path
 
@@ -26,31 +26,31 @@ MODEL_PATH = REPO_ROOT / "models" / "model_miniLM_final"
 @st.cache_resource
 def load_minilm():
     try:
-        st.write(f"🔄 Attempting to load MiniLM model from {MODEL_PATH}...")
+        #st.write(f"🔄 Attempting to load MiniLM model from {MODEL_PATH}...")
         model = AutoModelForSequenceClassification.from_pretrained(
             str(MODEL_PATH)  # Convert Path to string
         )
-        st.write("✅ MiniLM model loaded")
+        #st.write("✅ MiniLM model loaded")
 
         tokenizer = AutoTokenizer.from_pretrained(
             str(MODEL_PATH)
         )
 
-        st.write("✅ MiniLM tokenizer loaded")
+        #st.write("✅ MiniLM tokenizer loaded")
 
         model.eval()
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model.to(device)
-        st.write(f"✅ MiniLM model moved to device: {device}")
+        #st.write(f"✅ MiniLM model moved to device: {device}")
         return model, tokenizer, device
     except Exception as e:
         st.error("❌ Error loading MiniLM model:")
         st.exception(e)
         st.stop()
 
-st.write("🔄 Calling load_minilm()...")
+#st.write("🔄 Calling load_minilm()...")
 model, tokenizer, device = load_minilm()
-st.write("✅ MiniLM ready")
+#st.write("✅ MiniLM ready")
 
 # Integrated Gradients instance (fraud class = index 0)
 ig = IntegratedGradients(
