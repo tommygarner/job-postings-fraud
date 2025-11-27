@@ -57,7 +57,7 @@ ig = IntegratedGradients(
     lambda inputs_embeds, attention_mask: F.softmax(
         model(inputs_embeds=inputs_embeds, attention_mask=attention_mask).logits,
         dim=1,
-    )[:, 0]
+    )[:, 1]
 )
 
 # ------------------------------
@@ -74,7 +74,7 @@ def predict_fraud_prob(text: str) -> float:
     with torch.no_grad():
         outputs = model(**encoded)
         probs = torch.softmax(outputs.logits, dim=1)
-        fraud_prob = probs[0, 0].item()  # class 0 = fraud
+        fraud_prob = probs[0, 1].item()  # class 1 = fraud
     return fraud_prob
 
 # ------------------------------
