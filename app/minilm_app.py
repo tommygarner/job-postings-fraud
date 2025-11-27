@@ -80,7 +80,7 @@ def predict_fraud_prob(text: str) -> float:
 # ------------------------------
 # 3. MiniLM helper: IG word attributions
 # ------------------------------
-def get_ig_attributions(text: str, n_steps: int = 10):
+def get_ig_attributions(text: str, n_steps: int = 5):
     encoded = tokenizer(
         text,
         return_tensors="pt",
@@ -120,7 +120,6 @@ def get_ig_attributions(text: str, n_steps: int = 10):
 # ------------------------------
 # 4. Streamlit UI
 # ------------------------------
-st.set_page_config(page_title="Fake Job Posting Detector (MiniLM)", layout="wide")
 
 st.title("Fake Job Posting Detector – MiniLM")
 st.markdown(
@@ -141,20 +140,15 @@ if analyze:
         st.warning("Please enter a job posting.")
     else:
         try:
-            st.write("🔄 Starting prediction...")
-            with st.spinner("Getting fraud probability..."):
+            with st.spinner("Analyzing with MiniLM..."):
                 fraud_prob = predict_fraud_prob(job_text)
-            st.write(f"✅ Fraud probability: {fraud_prob:.2%}")
-            
-            st.write("🔄 Computing attributions...")
-            with st.spinner("Analyzing word importance..."):
-                token_attr_sorted, delta = get_ig_attributions(job_text, n_steps=10)
-            st.write("✅ Attributions computed")
-            
+                token_attr_sorted, delta = get_ig_attributions(job_text, n_steps=5)
+                
+                # Free GPU/CPU memory
+                torch.cuda.empty_cache() if torch.cuda.is_available() else None
+                
         except Exception as e:
-            st.error("❌ Error during analysis:")
             st.exception(e)
-            st.stop()
         else:
             # -------- Prediction panel --------
             if fraud_prob > 0.60:
