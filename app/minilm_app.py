@@ -315,8 +315,8 @@ if analyze:
 
             # Sort by attribution value
             sorted_attrs = sorted(token_attr_sorted, key=lambda x: x[1])
-            top_fraud = [f"{tok} ({attr:+.2f})" for tok, attr in sorted_attrs[:5]]
-            top_legit = [f"{tok} ({attr:+.2f})" for tok, attr in sorted_attrs[-5:][::-1]]
+            top_fraud = [f"{tok} ({attr:+.2f})" for tok, attr in sorted_attrs[-5:][::-1]]
+            top_legit = [f"{tok} ({attr:+.2f})" for tok, attr in sorted_attrs[:5]]
 
             col_fraud, col_legit = st.columns(2)
             with col_fraud:
