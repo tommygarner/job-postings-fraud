@@ -54,36 +54,15 @@ ig = IntegratedGradients(
 # ------------------------------
 @st.cache_resource
 def load_nb_with_shap():
-    st.write("🔄 Loading Naive Bayes + vectorizer...")
     nb_model = joblib.load("models/naive_bayes_model.pkl")
     nb_vectorizer = joblib.load("models/vectorizer.pkl")
-    st.write("✅ Naive Bayes + vectorizer loaded")
 
-    # Use the model's feature dimension to build background
-    expected = getattr(nb_model, "n_features_in_", None)
-    if expected is None:
-        expected = len(nb_vectorizer.vocabulary_)
-
-    import scipy.sparse as sp
-    st.write(f"🔄 Building NB SHAP background with {expected} features...")
-    X_bg_sparse = sp.csr_matrix((50, expected))  # 50 rows, expected feature dim
+    expected = getattr(nb_model, "n_features_in_", len(nb_vectorizer.vocabulary_))
+    X_bg_sparse = sp.csr_matrix((10, expected))
     X_bg_dense = X_bg_sparse.toarray()
 
-    def nb_predict_proba_pos(X_dense):
-        X_csr = sp.csr_matrix(X_dense)
-        exp = getattr(nb_model, "n_features_in_", X_csr.shape[1])
-        if X_csr.shape[1] != exp:
-            # pad or truncate to match expected
-            if X_csr.shape[1] < exp:
-                pad_width = exp - X_csr.shape[1]
-                X_csr = sp.hstack([X_csr, sp.csr_matrix((X_csr.shape[0], pad_width))])
-            else:
-                X_csr = X_csr[:, :exp]
-        return nb_model.predict_proba(X_csr)[:, 1]
-
-    st.write("🔄 Building NB SHAP KernelExplainer (this may take a moment)...")
-    nb_explainer = shap.KernelExplainer(nb_predict_proba_pos, X_bg_dense)
-    st.write("✅ NB SHAP explainer ready")
+    # LinearExplainer for linear models
+    nb_explainer = shap.LinearExplainer(nb_model, X_bg_dense)
 
     return nb_model, nb_vectorizer, nb_explainer
 
@@ -149,7 +128,7 @@ def get_ig_attributions(text: str, n_steps: int = 50):
 # ------------------------------
 # 3b. Naive Bayes + SHAP helper
 # ------------------------------
-def predict_nb_with_shap(text: str, top_k: int = 15, nsamples: int = 200):
+def predict_nb_with_shap(text: str, top_k: int = 15):
     X_sparse = nb_vectorizer.transform([text])
     expected = getattr(nb_model, "n_features_in_", X_sparse.shape[1])
     if X_sparse.shape[1] != expected:
@@ -164,8 +143,8 @@ def predict_nb_with_shap(text: str, top_k: int = 15, nsamples: int = 200):
     probs = nb_model.predict_proba(X_sparse)[0]
     nb_fraud_prob = float(probs[1])
 
-    # SHAP values (KernelExplainer returns list)
-    vals = nb_explainer.shap_values(X_dense, nsamples=nsamples)
+    # SHAP values (LinearExplainer: much faster on Cloud!)
+    vals = nb_explainer.shap_values(X_dense)
     if isinstance(vals, list):
         vals = vals[0]
     vals = np.array(vals).reshape(-1)
