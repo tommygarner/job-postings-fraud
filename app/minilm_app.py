@@ -9,6 +9,34 @@ import os
 
 st.set_page_config(page_title="Fake Job Posting Detector (MiniLM)", layout="wide")
 
+with st.sidebar:
+    st.header("About This Model")
+    st.markdown("""
+    ### Training Data
+    - 17,880 job postings in total
+    - Fraudulent: 866 (4.84%)
+    - Legitimate: 17,014 (95.16%)
+
+    ### Fraud Patterns (EDA)
+    - Missing company profile → **17.7%** fraud rate
+    - Missing employment type → **6.9%** fraud rate
+    - Missing experience requirements → **6.2%** fraud rate
+    - Very bare-bones postings → **22.2%** fraud rate
+    - Extremely complete postings → **9.3%** fraud rate
+
+    ### MiniLM Performance
+    - Accuracy: **98.4%**
+    - Precision (fraud): **99.8%**
+    - Recall (fraud): **97.0%**
+    - F1-score (fraud): **98.4%**
+
+    ### Method
+    - Fine-tuned MiniLM text classifier
+    - Trained on the Employment Scam Aegean dataset
+    - Integrated Gradients for word-level explanations
+    """)
+
+
 #st.write(f"🔍 Current working directory: {os.getcwd()}")
 #st.write(f"🔍 App file location: {__file__}")
 #st.write("✅ Script imports completed")
@@ -52,7 +80,7 @@ def load_minilm():
 model, tokenizer, device = load_minilm()
 #st.write("✅ MiniLM ready")
 
-# Integrated Gradients instance (fraud class = index 0)
+# Integrated Gradients instance (fraud class = index 1)
 ig = IntegratedGradients(
     lambda inputs_embeds, attention_mask: F.softmax(
         model(inputs_embeds=inputs_embeds, attention_mask=attention_mask).logits,
@@ -117,6 +145,29 @@ def get_ig_attributions(text: str, n_steps: int = 5):
 
     return token_attr, float(delta.item())
 
+import re
+
+def detect_fraud_patterns(text: str) -> dict:
+    t = text.lower()
+    patterns = {
+        "Urgent / pressure language": bool(re.search(r"\b(urgent|immediate|asap|limited time|act now|don't miss)\b", t)),
+        "Personal email domain": bool(re.search(r"@(gmail|yahoo|hotmail|outlook)\.com", t)),
+        "Upfront payment / fee": bool(re.search(r"\b(fee|registration fee|processing fee|send.*money|wire transfer|western union|paypal|venmo)\b", t)),
+        "Guaranteed high income": bool(re.search(r"\b(guaranteed|easy money|\$\s*\d{3,}\s*(per|/)\s*(week|day|hour))\b", t)),
+        "Vague company info": not bool(re.search(r"\b(inc|llc|corp|ltd|corporation|company)\b", t)),
+    }
+    return patterns
+
+def get_text_stats(text: str) -> dict:
+    words = text.split()
+    return {
+        "word_count": len(words),
+        "has_salary": bool(re.search(r"\$\s*\d+", text)),
+        "has_contact_email": bool(re.search(r"@", text)),
+        "has_requirements_keyword": "requirement" in text.lower() or "qualification" in text.lower(),
+    }
+
+
 # ------------------------------
 # 4. Streamlit UI
 # ------------------------------
@@ -173,6 +224,48 @@ if analyze:
             )
             st.markdown(f"**Recommendation:** {rec}")
 
+            with st.expander("📊 How to interpret this score"):
+                if fraud_prob < 0.30:
+                    st.write(
+                        "Scores below 30% usually correspond to well-structured postings "
+                        "with realistic requirements, salary, and clear company information."
+                    )
+                elif fraud_prob < 0.60:
+                    st.write(
+                        "Scores between 30–60% often indicate some missing details or "
+                        "mild red flags. Further manual verification is recommended."
+                    )
+                else:
+                    st.write(
+                        "Scores above 60% typically show multiple risk factors such as "
+                        "missing company info, unusual contact methods, or unrealistic offers."
+                    )
+
+            # ---- Simple job characteristics ----
+            stats = get_text_stats(job_text)
+            st.markdown("---")
+            st.subheader("Job Posting Characteristics")
+
+            c1, c2, c3, c4 = st.columns(4)
+            c1.metric("Word count", stats["word_count"])
+            c2.metric("Mentions salary", "Yes" if stats["has_salary"] else "No")
+            c3.metric("Has email/contact", "Yes" if stats["has_contact_email"] else "No")
+            c4.metric("Has requirements section", "Yes" if stats["has_requirements_keyword"] else "No")
+
+            # ---- Fraud pattern analysis ----
+            st.markdown("---")
+            st.subheader("Fraud Pattern Analysis")
+
+            patterns = detect_fraud_patterns(job_text)
+            triggered = [name for name, present in patterns.items() if present]
+
+            if triggered:
+                st.warning(f"Detected {len(triggered)} potential fraud indicator(s):")
+                for name in triggered:
+                    st.write(f"- {name}")
+            else:
+                st.success("No obvious manual fraud patterns detected.")
+
             # -------- IG word overlay --------
             st.markdown("---")
             st.subheader("Word Importance (Integrated Gradients)")
@@ -215,3 +308,23 @@ if analyze:
                 "</div>",
                 unsafe_allow_html=True,
             )
+
+            # ---- Top terms summary ----
+            st.markdown("---")
+            st.subheader("Most Influential Terms")
+
+            # Sort by attribution value
+            sorted_attrs = sorted(token_attr_sorted, key=lambda x: x[1])
+            top_fraud = [f"{tok} ({attr:+.2f})" for tok, attr in sorted_attrs[:5]]
+            top_legit = [f"{tok} ({attr:+.2f})" for tok, attr in sorted_attrs[-5:][::-1]]
+
+            col_fraud, col_legit = st.columns(2)
+            with col_fraud:
+                st.markdown("**🔴 Words pushing toward FRAUD**")
+                for t in top_fraud:
+                    st.write(f"- {t}")
+            with col_legit:
+                st.markdown("**🟢 Words pushing toward LEGIT**")
+                for t in top_legit:
+                    st.write(f"- {t}")
+
