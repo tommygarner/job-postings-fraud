@@ -51,6 +51,7 @@ wheels/
 .env
 secrets.json
 credentials.json
+.streamlit/secrets.toml    
 
 # Logs
 *.log
@@ -61,3 +62,8 @@ visualizations/temp/
 
 # Results
 results/temp/
+
+# Environments
+.venv/
+.venv310/
+venv/
