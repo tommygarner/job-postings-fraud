@@ -8,6 +8,8 @@
 
 [@sebaspalacino](https://github.com/sebaspalacino)
 
+[@slefebre10](https://github.com/slefebre10)
+
 **Course**: Advanced Machine Learning (UT Austin)  
 **Project Duration**: November 2025 - December 2025
 

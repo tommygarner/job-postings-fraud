@@ -1,88 +1,56 @@
-# \# Trained Models
+## Trained Models
 
-# 
+This directory contains trained models and preprocessing artifacts for fake job posting detection [attached_file:1].
 
-# This directory contains the trained machine learning models for the fake job posting detection system.
+## Files
 
-# 
+| File                  | Description                                  | Size (approx.) | Format  |
+|-----------------------|----------------------------------------------|----------------|---------|
+| `naive_bayes_model.pkl` | Naive Bayes on TF-IDF + numeric features [attached_file:1]. | ~5–10 MB       | Pickle |
+| `lstm_model.h5`       | LSTM for sequential fraud patterns [attached_file:1].        | ~50–100 MB     | Keras HDF5 |
+| `vectorizer.pkl`      | TF-IDF vectorizer (~5,000 features) [attached_file:1].       | ~20–30 MB      | Pickle |
+| `tokenizer.pkl`       | Keras tokenizer (vocab_size ~10,000) [attached_file:1].      | ~2–5 MB        | Pickle |
 
-# \## 📦 Files
+## Model Performance
 
-# 
+### Final Ensemble (NB + LSTM + Rules)
 
-# | File | Description | Size | Format |
+| Metric          | Value   | Description                                  |
+|-----------------|---------|----------------------------------------------|
+| Accuracy        | 97.52%  | Overall correct predictions [attached_file:1]. |
+| F1-Score        | 0.7140  | Harmonic mean of precision and recall [attached_file:1]. |
+| Precision       | 80.98%  | Correct when flagged as fraud ~81% of time [attached_file:1]. |
+| Recall          | 63.85%  | Directly catches ~64% of frauds [attached_file:1]. |
+| Total Detection | 76.9%   | Frauds in HIGH or MEDIUM risk [attached_file:1]. |
 
-# |------|-------------|------|--------|
+## Risk-Based Performance
 
-# | `naive\_bayes\_model.pkl` | Naive Bayes classifier trained on TF-IDF + numeric features | ~5-10 MB | Pickle |
+| Risk Level      | Fraud Detection (260 fraud) | False Positive Rate (5,104 real) |
+|-----------------|-----------------------------|-----------------------------------|
+| 🔴 **HIGH**     | 59.2% (154/260)             | 0.3% (17/5,104) [attached_file:1]. |
+| 🟡 **MEDIUM**   | 17.7% (46/260)              | 4.5% (229/5,104) [attached_file:1]. |
+| 🟢 **LOW**      | 23.1% (60/260)              | 95.2% (4,858/5,104) [attached_file:1]. |
 
-# | `lstm\_model.h5` | LSTM neural network for sequential pattern detection | ~50-100 MB | Keras HDF5 |
+## Individual Models
 
-# | `vectorizer.pkl` | TF-IDF vectorizer (5000 features) | ~20-30 MB | Pickle |
+| Model        | Mean Score (Fraud) | Mean Score (Real) | Strength                               |
+|-------------|--------------------|-------------------|----------------------------------------|
+| **Naive Bayes** | 31.76%          | 1.49%             | Fast, interpretable TF-IDF features [attached_file:1]. |
+| **LSTM**        | 60.43%          | 2.82%             | Strong on text sequence patterns [attached_file:1]. |
 
-# | `tokenizer.pkl` | Keras tokenizer (vocab\_size=10,000) | ~2-5 MB | Pickle |
+## Architectures
 
-# 
+### Naive Bayes
 
-# \## 🎯 Model Performance
+- Input: TF-IDF (≈5,000 features) + selected numeric signals [attached_file:1].  
+- Role: 25% of ensemble weight; interpretable baseline [attached_file:1].  
 
-# 
+### LSTM
 
-# \### Final Ensemble (Weighted 25/75 NB/LSTM + Rule-Boosting)
+- Input: Tokenized, padded job descriptions via `tokenizer.pkl` [attached_file:1].  
+- Role: 75% of ensemble weight; captures scam phrasing [attached_file:1].  
 
-# 
+### Ensemble + Rules
 
-# | Metric | Value | Description |
-
-# |--------|-------|-------------|
-
-# | \*\*Accuracy\*\* | 97.52% | Overall correct predictions |
-
-# | \*\*F1-Score\*\* | 0.7140 | Harmonic mean of precision and recall |
-
-# | \*\*Precision\*\* | 80.98% | When flagged as fraud, correct 81% of time |
-
-# | \*\*Recall\*\* | 63.85% | Directly catches 64% of frauds |
-
-# | \*\*Total Detection\*\* | 76.9% | Frauds flagged as HIGH or MEDIUM risk |
-
-# 
-
-# \### Risk-Based Performance
-
-# 
-
-# | Risk Level | Fraud Detection | False Positive Rate |
-
-# |-----------|-----------------|---------------------|
-
-# | 🔴 \*\*HIGH RISK\*\* | 59.2% (154/260) | 0.3% (17/5104) |
-
-# | 🟡 \*\*MEDIUM RISK\*\* | 17.7% (46/260) | 4.5% (229/5104) |
-
-# | 🟢 \*\*LOW RISK\*\* | 23.1% (60/260) | 95.2% (4858/5104) |
-
-# 
-
-# \### Individual Model Performance
-
-# 
-
-# | Model | Mean Score (Fraud) | Mean Score (Real) | Strength |
-
-# |-------|-------------------|-------------------|----------|
-
-# | \*\*Naive Bayes\*\* | 31.76% | 1.49% | Fast, interpretable TF-IDF features |
-
-# | \*\*LSTM\*\* | 60.43% | 2.82% | Sequential pattern detection |
-
-# 
-
-# \## 🔧 Model Architecture
-
-# 
-
-# \### Naive Bayes Classifier
-
-
-
+- Blend: `0.25 * NB_score + 0.75 * LSTM_score` [attached_file:1].  
+- Risk: Post-processing rules → HIGH / MEDIUM / LOW buckets [attached_file:1].  
