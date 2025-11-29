@@ -79,7 +79,8 @@ Open that URL in your browser to use the Fake Job Posting Detection app.
   * MiniLM transformer (HuggingFace)
 
 * **Ensemble Strategy**  
-  Weighted blend: **NB 5%**, **LSTM 45%**, **MiniLM 50%** → outputs **LOW / MEDIUM / HIGH** fraud-risk bands.
+  Weighted blend: **NB 30%**, **LSTM 60%**, **MiniLM 10%** → outputs **LOW / MEDIUM / HIGH** fraud-risk bands.
+  Decision threshold: 40%
 
 * **Interpretability**
   * Naive Bayes: word-level TF-IDF contributions
