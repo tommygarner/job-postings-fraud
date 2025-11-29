@@ -34,33 +34,64 @@ both amateur and sophisticated job posting scams.
 - **Fraud Rate**: 4.84% (severe class imbalance)
 - **Target**: Binary classification (fraudulent: 0/1)
 
-## Quick Start
+## Quick Start: Run the Streamlit App Locally
 
-### 1. Clone Repository
-```bash
-git clone https://github.com/YOUR_USERNAME/fake-job-posting-detection.git
+### 1. Clone the repository
+
+```
+git clone https://github.com/tommygarner/fake-job-posting-detection.git
 cd fake-job-posting-detection
 ```
 
-### 2. Set Up Environment
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
+### 2. Create and activate a virtual environment (Python 3.10)
+
+On Windows (PowerShell):
+
+```
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 ```
 
-### 3. Download Dataset
-```bash
-# Using kaggle CLI
-kaggle datasets download -d shivamb/real-or-fake-fake-jobposting-prediction
-unzip real-or-fake-fake-jobposting-prediction.zip -d data/raw/
+On macOS / Linux:
+
+```
+python -m venv .venv
+source .venv/bin/activate
 ```
 
-### 4. Run EDA
-```bash
-cd notebooks
-jupyter notebook 01_eda_summary.ipynb
+### 3. Install dependencies
 ```
+pip install --upgrade pip
+pip install -r requirements_app.txt
+```
+
+
+This installs Streamlit, TensorFlow 2.12, scikit‑learn, transformers, and other packages needed by the app.
+
+### 4. Ensure model files are present
+
+The repository ships with pre‑trained models under `models/`:
+
+- `naive_bayes_model.pkl`
+- `vectorizer.pkl`
+- `nb_pipeline.pkl`
+- `tokenizer.pkl`
+- `lstm_model.h5`
+- `model_miniLM_final/` (MiniLM transformer + tokenizer)
+
+As long as these files are present in `models/`, no retraining is required to run the app.
+
+### 5. Run the Streamlit app
+
+From the repo root:
+
+```
+cd app
+streamlit run app.py
+```
+
+Streamlit will print a local URL such as `http://localhost:8501`.  
+Open that URL in your browser to use the Fake Job Posting Detection app.
 
 ## Project Phases
 
