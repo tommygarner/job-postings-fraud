@@ -60,20 +60,7 @@ pip install -r requirements_app.txt
 
 This installs Streamlit, TensorFlow 2.12, scikit‑learn, transformers, and other packages needed by the app.
 
-### 4. Ensure model files are present
-
-The repository ships with pre‑trained models under `models/`:
-
-- `naive_bayes_model.pkl`
-- `vectorizer.pkl`
-- `nb_pipeline.pkl`
-- `tokenizer.pkl`
-- `lstm_model.h5`
-- `model_miniLM_final/` (MiniLM transformer + tokenizer)
-
-As long as these files are present in `models/`, no retraining is required to run the app.
-
-### 5. Run the Streamlit app
+### 4. Run the Streamlit app
 
 From the repo root:
 
