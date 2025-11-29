@@ -4,12 +4,6 @@ data/processed/*.csv
 *.csv
 !requirements.txt
 
-# Models
-models/*.pkl
-models/*.joblib
-models/*.h5
-models/*.pt
-
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb_checkpoints

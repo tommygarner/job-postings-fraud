@@ -40,7 +40,7 @@ both amateur and sophisticated job posting scams.
 
 ```
 git clone https://github.com/tommygarner/job-postings-fraud.git
-cd fake-job-posting-detection
+cd job-postings-fraud
 ```
 
 ### 2. Create and activate a virtual environment (Python 3.10)
