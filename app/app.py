@@ -62,9 +62,9 @@ def load_models():
         st.write("DEBUG: tokenizer loaded OK")
 
         # LSTM model
-        lstm_saved_dir = models_path / "lstm_savedmodel"
-        st.write("DEBUG: loading LSTM SavedModel from", lstm_saved_dir)
-        lstm_model = tf.keras.models.load_model(lstm_saved_dir)
+        lstm_h5_path = models_path / "lstm_model.h5"
+        st.write("DEBUG: loading LSTM from", lstm_h5_path)
+        lstm_model = tf.keras.models.load_model(lstm_h5_path)
         st.write("DEBUG: LSTM model loaded OK")
 
         # MiniLM
