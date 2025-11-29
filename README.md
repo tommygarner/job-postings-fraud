@@ -124,8 +124,7 @@ Static visual outputs including LIME bars, SHAP text plots, IG attributions, hea
 | `models/` | Saved model artifacts (NB, LSTM, MiniLM) |
 | `notebooks/` | EDA, preprocessing, training, **Notebook 09: Interpretations** |
 | `data/` | Raw & processed data (local-only / .gitignored) |
-| `visualizations/` | **LIME, SHAP, Integrated Gradients, ensemble diagnostics** |
-| `results/` | **Performance metrics, confusion matrices, ROC curves, tables** |
+| `results/` | **LIME, SHAP, Integrated Gradients, ensemble diagnostics** |
 | `requirements_app.txt` | Dependencies for the Streamlit app |
 | `requirements_full.txt` | Full environment (training + interpretability) |
 
