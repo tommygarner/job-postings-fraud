@@ -39,46 +39,46 @@ def load_models():
     models_path = Path("models")
     minilm_path = models_path / "model_miniLM_final"
 
-    st.write("DEBUG: models_path =", models_path.resolve())
-    st.write("DEBUG: contents of models/:", [p.name for p in models_path.iterdir()])
+    #st.write("DEBUG: models_path =", models_path.resolve())
+    #st.write("DEBUG: contents of models/:", [p.name for p in models_path.iterdir()])
 
     try:
         # Naive Bayes model (saved with joblib.dump)
         nb_path = models_path / "naive_bayes_model.pkl"
-        st.write("DEBUG: loading NB from", nb_path)
+        #st.write("DEBUG: loading NB from", nb_path)
         nb_model = joblib.load(nb_path)
-        st.write("DEBUG: NB loaded OK")
+        #st.write("DEBUG: NB loaded OK")
 
         # TF‑IDF vectorizer (saved with joblib.dump)
         vec_path = models_path / "vectorizer.pkl"
-        st.write("DEBUG: loading vectorizer from", vec_path)
+        #st.write("DEBUG: loading vectorizer from", vec_path)
         vectorizer = joblib.load(vec_path)
-        st.write("DEBUG: vectorizer loaded OK")
+        #st.write("DEBUG: vectorizer loaded OK")
 
         # LSTM tokenizer (also saved with joblib.dump)
         tok_path = models_path / "tokenizer.pkl"
-        st.write("DEBUG: loading tokenizer from", tok_path)
+        #st.write("DEBUG: loading tokenizer from", tok_path)
         lstm_tokenizer = joblib.load(tok_path)
-        st.write("DEBUG: tokenizer loaded OK")
+        #st.write("DEBUG: tokenizer loaded OK")
 
         # LSTM model
         lstm_h5_path = models_path / "lstm_model.h5"
-        st.write("DEBUG: loading LSTM from", lstm_h5_path)
+        #st.write("DEBUG: loading LSTM from", lstm_h5_path)
         lstm_model = tf.keras.models.load_model(lstm_h5_path)
-        st.write("DEBUG: LSTM model loaded OK")
+        #st.write("DEBUG: LSTM model loaded OK")
 
         # MiniLM
-        st.write("DEBUG: loading MiniLM from", minilm_path)
+        #st.write("DEBUG: loading MiniLM from", minilm_path)
         minilm_tokenizer = AutoTokenizer.from_pretrained(str(minilm_path))
         minilm_model = AutoModelForSequenceClassification.from_pretrained(str(minilm_path))
-        st.write("DEBUG: MiniLM tokenizer/model loaded OK")
+        #st.write("DEBUG: MiniLM tokenizer/model loaded OK")
 
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        st.write("DEBUG: using device", device)
+        #st.write("DEBUG: using device", device)
         minilm_model.to(device)
         minilm_model.eval()
 
-        st.write("DEBUG: all models loaded successfully")
+        #st.write("DEBUG: all models loaded successfully")
         return nb_model, vectorizer, lstm_tokenizer, lstm_model, minilm_tokenizer, minilm_model, device
 
     except Exception as e:
@@ -156,8 +156,8 @@ def get_predictions(
     with torch.no_grad():
         outputs = minilm_model(**inputs)
         probs = torch.softmax(outputs.logits, dim=1)
-        st.write("DEBUG MiniLM logits:", outputs.logits.cpu().numpy())
-        st.write("DEBUG MiniLM probs:", probs.cpu().numpy())
+        #st.write("DEBUG MiniLM logits:", outputs.logits.cpu().numpy())
+        #st.write("DEBUG MiniLM probs:", probs.cpu().numpy())
         fraud_index = minilm_model.config.label2id["fraud"]  # = 1
         minilm_prob = float(probs.cpu().numpy()[0][fraud_index])
         
