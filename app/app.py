@@ -62,9 +62,9 @@ def load_models():
         st.write("DEBUG: tokenizer loaded OK")
 
         # LSTM model
-        lstm_path = models_path / "lstm_model.h5"
-        st.write("DEBUG: loading LSTM model from", lstm_path)
-        lstm_model = load_model(lstm_path)
+        lstm_saved_dir = models_path / "lstm_savedmodel"
+        st.write("DEBUG: loading LSTM SavedModel from", lstm_saved_dir)
+        lstm_model = tf.keras.models.load_model(lstm_saved_dir)
         st.write("DEBUG: LSTM model loaded OK")
 
         # MiniLM
@@ -136,9 +136,13 @@ def get_predictions(
     nb_prob = float(nb_probs[1])
 
     # 2. LSTM
+    MAX_SEQ_LEN = 256  # or 500, exactly whatever you used in training
+
     lstm_seq = lstm_tokenizer.texts_to_sequences([processed_text])
-    lstm_padded = pad_sequences(lstm_seq, maxlen=256)
-    lstm_prob = float(lstm_model.predict(lstm_padded, verbose=0)[0][0])
+    lstm_padded = pad_sequences(lstm_seq, maxlen=MAX_SEQ_LEN,
+                            padding="post", truncating="post")
+    lstm_prob = float(lstm_model(lstm_padded, training=False).numpy()[0][0])
+
 
     # 3. MiniLM
     inputs = minilm_tokenizer(
@@ -152,7 +156,15 @@ def get_predictions(
     with torch.no_grad():
         outputs = minilm_model(**inputs)
         probs = torch.softmax(outputs.logits, dim=1)
-        minilm_prob = float(probs.cpu().numpy()[0][1])
+        st.write("DEBUG MiniLM logits:", outputs.logits.cpu().numpy())
+        st.write("DEBUG MiniLM probs:", probs.cpu().numpy())
+        fraud_index = minilm_model.config.label2id["fraud"]  # = 1
+        minilm_prob = float(probs.cpu().numpy()[0][fraud_index])
+        
+    
+    fraud_index = minilm_model.config.label2id["fraud"]  # = 1
+    minilm_prob = float(probs.cpu().numpy()[0][fraud_index])
+
 
     # Ensemble
     w_nb, w_lstm, w_minilm = 0.05, 0.45, 0.50
