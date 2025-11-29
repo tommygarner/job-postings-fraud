@@ -67,3 +67,7 @@ results/temp/
 .venv/
 .venv310/
 venv/
+echo .venv_tf/
+.venv_tf/
+venv_tf/
+

@@ -28,34 +28,61 @@ st.set_page_config(
     layout="wide"
 )
 
+from pathlib import Path
+import joblib
+
 # ========== LOAD MODELS ==========
 @st.cache_resource
 def load_models():
     import os
-    
-    models_path = 'models/'
-    minilm_path = os.path.join(models_path, "model_miniLM_final")
-    
+
+    models_path = Path("models")
+    minilm_path = models_path / "model_miniLM_final"
+
+    st.write("DEBUG: models_path =", models_path.resolve())
+    st.write("DEBUG: contents of models/:", [p.name for p in models_path.iterdir()])
+
     try:
-        with open(os.path.join(models_path, "naive_bayes_model.pkl"), "rb") as f:
-            nb_model = pickle.load(f)
-        with open(os.path.join(models_path, "vectorizer.pkl"), "rb") as f:
-            vectorizer = pickle.load(f)
-        with open(os.path.join(models_path, "tokenizer.pkl"), "rb") as f:
-            lstm_tokenizer = pickle.load(f)
-        lstm_model = load_model(os.path.join(models_path, 'lstm_model.h5'))
-        
-        minilm_tokenizer = AutoTokenizer.from_pretrained(minilm_path)
-        minilm_model = AutoModelForSequenceClassification.from_pretrained(minilm_path)
-        
+        # Naive Bayes model (saved with joblib.dump)
+        nb_path = models_path / "naive_bayes_model.pkl"
+        st.write("DEBUG: loading NB from", nb_path)
+        nb_model = joblib.load(nb_path)
+        st.write("DEBUG: NB loaded OK")
+
+        # TF‑IDF vectorizer (saved with joblib.dump)
+        vec_path = models_path / "vectorizer.pkl"
+        st.write("DEBUG: loading vectorizer from", vec_path)
+        vectorizer = joblib.load(vec_path)
+        st.write("DEBUG: vectorizer loaded OK")
+
+        # LSTM tokenizer (also saved with joblib.dump)
+        tok_path = models_path / "tokenizer.pkl"
+        st.write("DEBUG: loading tokenizer from", tok_path)
+        lstm_tokenizer = joblib.load(tok_path)
+        st.write("DEBUG: tokenizer loaded OK")
+
+        # LSTM model
+        lstm_path = models_path / "lstm_model.h5"
+        st.write("DEBUG: loading LSTM model from", lstm_path)
+        lstm_model = load_model(lstm_path)
+        st.write("DEBUG: LSTM model loaded OK")
+
+        # MiniLM
+        st.write("DEBUG: loading MiniLM from", minilm_path)
+        minilm_tokenizer = AutoTokenizer.from_pretrained(str(minilm_path))
+        minilm_model = AutoModelForSequenceClassification.from_pretrained(str(minilm_path))
+        st.write("DEBUG: MiniLM tokenizer/model loaded OK")
+
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        st.write("DEBUG: using device", device)
         minilm_model.to(device)
         minilm_model.eval()
-        
+
+        st.write("DEBUG: all models loaded successfully")
         return nb_model, vectorizer, lstm_tokenizer, lstm_model, minilm_tokenizer, minilm_model, device
-        
+
     except Exception as e:
-        st.error(f"Error loading models: {str(e)}")
+        st.error(f"Error loading models: {e}")
         st.stop()
 
 nb_model, vectorizer, lstm_tokenizer, lstm_model, minilm_tokenizer, minilm_model, device = load_models()
@@ -110,7 +137,7 @@ def get_predictions(
 
     # 2. LSTM
     lstm_seq = lstm_tokenizer.texts_to_sequences([processed_text])
-    lstm_padded = pad_sequences(lstm_seq, maxlen=200)
+    lstm_padded = pad_sequences(lstm_seq, maxlen=256)
     lstm_prob = float(lstm_model.predict(lstm_padded, verbose=0)[0][0])
 
     # 3. MiniLM
