@@ -73,22 +73,60 @@ Open that URL in your browser to use the Fake Job Posting Detection app.
 
 ## Methods (High Level)
 
-- **Models**: Naive Bayes + TF‑IDF, LSTM, MiniLM transformer  
-- **Ensemble**: NB 5%, LSTM 45%, MiniLM 50%; LOW / MEDIUM / HIGH risk bands  
-- **Interpretability**: Naive Bayes word‑level contributions, LSTM and MiniLM explanations via LIME/SHAP, integrated gradients for MiniLM, model‑agreement narratives, and structured‑feature commentary with simple confidence plots.
-- **Tooling**: Pandas, NumPy, scikit‑learn, TensorFlow, PyTorch + Transformers, Streamlit
+* **Models**
+  * Naive Bayes + TF-IDF
+  * LSTM (Keras)
+  * MiniLM transformer (HuggingFace)
+
+* **Ensemble Strategy**  
+  Weighted blend: **NB 5%**, **LSTM 45%**, **MiniLM 50%** → outputs **LOW / MEDIUM / HIGH** fraud-risk bands.
+
+* **Interpretability**
+  * Naive Bayes: word-level TF-IDF contributions
+  * LSTM + MiniLM: **LIME** and **SHAP** text explanations
+  * MiniLM: **Integrated Gradients** token attributions
+  * Model-agreement narratives (how/why the ensemble votes)
+  * Structured-feature commentary & confidence plots
+
+* **Tooling**  
+  Pandas, NumPy, scikit-learn, TensorFlow, PyTorch + Transformers, Streamlit
+
+---
+
+## Interpretability & Visualizations
+
+Interpretability artifacts—LIME, SHAP, Integrated Gradients, and ensemble diagnostics—are generated and documented in:
+
+### **`notebooks/09_interpretations.ipynb`**
+
+This notebook produces:
+
+* LIME word-importance plots (NB/LSTM/MiniLM)
+* SHAP token-level explanations for NB and MiniLM
+* Integrated Gradients attribution plots for MiniLM
+* Feature-importance plots for structured inputs
+* Ensemble agreement & narrative diagnostics
+* Per-sample and global explanation summaries
+
+Running the notebook will automatically save figures into:
+
+### **`results/`**
+
+Static visual outputs including LIME bars, SHAP text plots, IG attributions, heatmaps, and ensemble-comparison graphics.
 
 ---
 
 ## Repo Structure
 
 | Folder | Purpose |
-|--------|---------|
-| `app/` | Streamlit app |
-| `models/` | Trained model artifacts |
-| `notebooks/` | EDA and training |
-| `data/` | Raw / processed data (local only or .gitignored) |
-| `results/` | Metrics and outputs |
+| --- | --- |
+| `app/` | Streamlit application |
+| `models/` | Saved model artifacts (NB, LSTM, MiniLM) |
+| `notebooks/` | EDA, preprocessing, training, **Notebook 09: Interpretations** |
+| `data/` | Raw & processed data (local-only / .gitignored) |
+| `results/` | **LIME, SHAP, Integrated Gradients, ensemble diagnostics** |
+| `requirements_app.txt` | Dependencies for the Streamlit app |
+| `requirements_full.txt` | Full environment (training + interpretability) |
 
 ---
 
