@@ -13,19 +13,7 @@
 
 ## Project Overview
 
-This project builds a machine learning system to detect fraudulent job postings using 
-a Kaggle dataset of 17,880 job postings (4.84% fraudulent). Our novel approach combines 
-**missingness-based feature engineering** with **interpretability analysis** to identify 
-both amateur and sophisticated job posting scams.
-
-### Key Contributions
-
-1. **Novel Feature Engineering**: 16 engineered features from missing data patterns
-2. **U-Shaped Fraud Pattern Discovery**: Identified dual fraud archetypes
-   - Amateur scams (completeness score 0): 22.2% fraud rate
-   - Sophisticated scams (completeness score 10): 9.3% fraud rate
-3. **Interpretability-First Design**: Sentence-level fraud explanations using LIME/SHAP
-4. **Statistically Validated**: Chi-square tests prove feature significance (p < 0.001)
+Streamlit app and ML pipeline to flag fraudulent job ads using Naive Bayes, LSTM, and MiniLM.
 
 ### Dataset
 
@@ -48,8 +36,6 @@ cd job-postings-fraud
 This project is tested with Python 3.10. Other versions (3.12–3.14) may have issues installing NumPy / TensorFlow.
 
 On Windows (PowerShell):
-
-
 
 ```
 py -3.10 -m venv .venv
@@ -89,8 +75,6 @@ As long as these files are present in `models/`, no retraining is required to ru
 
 From the repo root:
 
-
-
 ```
 python -m streamlit run app/app.py
 ```
@@ -98,73 +82,26 @@ python -m streamlit run app/app.py
 Streamlit will print a local URL such as `http://localhost:8501`.  
 Open that URL in your browser to use the Fake Job Posting Detection app.
 
-## Project Phases
+## Methods (High Level)
 
-### Phase 1: EDA & Feature Engineering
-- Analyzed missing value patterns (83.96% salary_range missing)
-- Discovered U-shaped fraud-completeness relationship
-- Created 16 novel features (10 binary indicators + completeness score + patterns)
-- Statistical validation with chi-square tests
+- **Models**: Naive Bayes + TF‑IDF, LSTM, MiniLM transformer  
+- **Ensemble**: NB 5%, LSTM 45%, MiniLM 50%; LOW / MEDIUM / HIGH risk bands  
+- **Interpretability**: Naive Bayes word‑level contributions, LSTM and MiniLM explanations via LIME/SHAP, integrated gradients for MiniLM, model‑agreement narratives, and structured‑feature commentary with simple confidence plots.
+- **Tooling**: Pandas, NumPy, scikit‑learn, TensorFlow, PyTorch + Transformers, Streamlit
 
-### Phase 2: Baseline Modeling
-- Logistic Regression with polynomial features
-- Random Forest and XGBoost models
-- Class imbalance handling (focal loss, cost-weighting, SMOTE)
-- Performance on AUROC, PR-AUC, F1-score
+---
 
-### Phase 3: Advanced Interpretability (Next)
-- LIME/SHAP explanations for individual predictions
-- Sentence-level fraud indicators
-- Interactive visualization dashboard
-- User feedback loop for model improvement
-
-### Phase 4: Documentation & Blog (Final)
-- Project blog post explaining findings
-- Code walkthroughs and methodology
-- Presentation slides for in-class demo
-- Peer evaluation
-
-## Repository Structure
+## Repo Structure
 
 | Folder | Purpose |
 |--------|---------|
-| `notebooks/` | Jupyter notebooks for analysis pipeline |
-| `src/` | Reusable Python modules for modeling |
-| `data/` | Raw and processed datasets |
+| `app/` | Streamlit app |
 | `models/` | Trained model artifacts |
-| `visualizations/` | EDA and model performance plots |
-| `results/` | Metrics, feature importance, predictions |
-| `docs/` | Documentation and blog content |
+| `notebooks/` | EDA and training |
+| `data/` | Raw / processed data (local only or .gitignored) |
+| `results/` | Metrics and outputs |
 
-## Methods & Technologies
-
-- **Data Processing**: Pandas, NumPy
-- **Modeling**: Scikit-learn, XGBoost, LightGBM
-- **Imbalance Handling**: SMOTE, focal loss, class weighting
-- **Interpretability**: LIME, SHAP
-- **Visualization**: Matplotlib, Seaborn, Plotly
-- **Documentation**: Jupyter, Markdown
-
-## Module 1: Interpretable Ensemble
-
-### Features
-- **Multi-level Interpretability**: Feature importance, sentence attribution, linguistic patterns, red flags
-- **Three-tier Risk Classification**: HIGH/MEDIUM/LOW risk levels with actionable recommendations
-- **Rule-Based Boosting**: 8 red flags detect fraud indicators (urgency, payment requests, missing credentials)
-- **Batch Processing**: Optimized implementation 20-50x faster than single predictions
-
-### Performance
-- **Accuracy**: 97.52%
-- **F1-Score**: 0.714
-- **Precision**: 80.98%
-- **Total Fraud Detection**: 76.9% (HIGH + MEDIUM)
-- **False Positive Rate**: 0.3% (HIGH), 4.5% (MEDIUM)
-
-See `notebooks/06_module1_interpretability.ipynb` for full implementation and examples.
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+---
 
 ## References
 
@@ -172,5 +109,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 - https://github.com/38832/Fake-Job-Posting-Prediction
 - https://github.com/Anshupriya2694/Fake-Job-Posting-Prediction
 
-**Last Updated**: November 6, 2025  
+**Last Updated**: November 29, 2025  
 **Status**: Active Development
