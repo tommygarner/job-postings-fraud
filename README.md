@@ -53,7 +53,7 @@ On Windows (PowerShell):
 
 ```
 py -3.10 -m venv .venv
-..venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 ```
 
 On macOS / Linux:
