@@ -39,7 +39,7 @@ both amateur and sophisticated job posting scams.
 ### 1. Clone the repository
 
 ```
-git clone https://github.com/tommygarner/fake-job-posting-detection.git
+git clone https://github.com/tommygarner/job-postings-fraud.git
 cd fake-job-posting-detection
 ```
 
