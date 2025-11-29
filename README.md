@@ -45,26 +45,30 @@ cd job-postings-fraud
 
 ### 2. Create and activate a virtual environment (Python 3.10)
 
+This project is tested with Python 3.10. Other versions (3.12–3.14) may have issues installing NumPy / TensorFlow.
+
 On Windows (PowerShell):
 
+
+
 ```
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+py -3.10 -m venv .venv
+..venv\Scripts\Activate.ps1
 ```
 
 On macOS / Linux:
 
 ```
-python -m venv .venv
+python3.10 -m venv .venv
 source .venv/bin/activate
 ```
 
 ### 3. Install dependencies
 ```
-pip install --upgrade pip
+python -m pip install --upgrade pip
+pip install setuptools wheel
 pip install -r requirements_app.txt
 ```
-
 
 This installs Streamlit, TensorFlow 2.12, scikit‑learn, transformers, and other packages needed by the app.
 
@@ -85,9 +89,10 @@ As long as these files are present in `models/`, no retraining is required to ru
 
 From the repo root:
 
+
+
 ```
-cd app
-streamlit run app.py
+python -m streamlit run app/app.py
 ```
 
 Streamlit will print a local URL such as `http://localhost:8501`.  
