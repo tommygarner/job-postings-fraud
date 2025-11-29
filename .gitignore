@@ -8,7 +8,6 @@ data/processed/*.csv
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 Untitled*.ipynb
-models/lstm_savedmodel/
 
 results_minilm*/
 
