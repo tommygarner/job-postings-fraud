@@ -167,10 +167,10 @@ def get_predictions(
 
 
     # Ensemble
-    w_nb, w_lstm, w_minilm = 0.05, 0.45, 0.50
+    w_nb, w_lstm, w_minilm = 0.30, 0.60, 0.10
     ensemble_prob = (w_nb * nb_prob) + (w_lstm * lstm_prob) + (w_minilm * minilm_prob)
 
-    decision_threshold = 0.30
+    decision_threshold = 0.40
     is_fraud = ensemble_prob >= decision_threshold
 
     if ensemble_prob >= 0.60:
@@ -208,29 +208,54 @@ st.markdown("*3-Model Ensemble: Naive Bayes + LSTM + MiniLM with Integrated Grad
 # ========== MODEL PERFORMANCE (COLLAPSIBLE) ==========
 with st.expander("📊 View Model Performance Stats", expanded=False):
     st.markdown("**Test Set Performance (5,364 samples)**")
-    
+
     stats_df = pd.DataFrame({
-        'Model': ['Naive Bayes', 'LSTM', 'MiniLM+IG', 'Ensemble'],
-        'Accuracy': [0.9702, 0.9737, 0.9748, 0.9782],
-        'F1-Score': [0.5960, 0.6994, 0.7007, 0.7298],
-        'Precision': [0.8676, 0.7847, 0.8272, 0.9133],
-        'Recall': [0.4538, 0.6308, 0.6077, 0.6077],
-        'ROC-AUC': [0.8494, 0.9343, 0.9406, 0.9714]
+        "Model": ["Naive Bayes", "LSTM", "MiniLM+IG (calibrated)", "Ensemble"],
+        "Accuracy": [
+            0.9597,   # NB
+            0.9843,   # LSTM
+            0.8986,   # MiniLM calibrated @ thr=0.20
+            0.9851    # Ensemble @ thr=0.40, w=(0.3,0.6,0.1)
+        ],
+        "F1-Score": [
+            0.3933,   # NB
+            0.8346,   # LSTM
+            0.3615,   # MiniLM calibrated
+            0.8387    # Ensemble
+        ],
+        "Precision": [
+            0.7292,   # NB
+            0.8548,   # LSTM
+            0.2601,   # MiniLM calibrated
+            0.8814    # Ensemble
+        ],
+        "Recall": [
+            0.2692,   # NB
+            0.8154,   # LSTM
+            0.5923,   # MiniLM calibrated
+            0.8000    # Ensemble
+        ],
+        "ROC-AUC": [
+            0.7938,   # NB
+            0.9826,   # LSTM
+            0.8389,   # MiniLM calibrated
+            0.9817    # Ensemble
+        ],
     })
-    
+
     st.dataframe(
         stats_df.style.format({
-            'Accuracy': '{:.1%}',
-            'F1-Score': '{:.4f}',
-            'Precision': '{:.4f}',
-            'Recall': '{:.4f}',
-            'ROC-AUC': '{:.4f}'
+            "Accuracy": "{:.1%}",
+            "F1-Score": "{:.4f}",
+            "Precision": "{:.4f}",
+            "Recall": "{:.4f}",
+            "ROC-AUC": "{:.4f}",
         }),
         width="stretch",
-        hide_index=True
+        hide_index=True,
     )
-    
-    st.info("Ensemble weights: NB 5% + LSTM 45% + MiniLM 50% | Decision threshold: 30%")
+
+    st.info("Ensemble weights: NB 30% + LSTM 60% + MiniLM 10% | Decision threshold: 40%")
 
 st.markdown("---")
 
@@ -284,7 +309,7 @@ if st.button("Analyze Job Posting", type="primary", width="stretch"):
             st.markdown(f"## {results['risk_color']} {results['risk']}")
             st.markdown(
                 f"**Fraud Probability (Ensemble): {results['ensemble_prob']*100:.1f}%** "
-                "(Decision threshold: 30%)"
+                "(Decision threshold: 40%)"
             )
             
             # Simple traffic-light style message
