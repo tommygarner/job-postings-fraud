@@ -1,7 +1,4 @@
 # Data files
-data/raw/*.csv
-data/processed/*.csv
-*.csv
 !requirements.txt
 
 # Jupyter
